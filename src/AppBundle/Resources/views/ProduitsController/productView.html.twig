@@ -1,0 +1,51 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Product View{% endblock %}
+
+{% block navigation %}
+  
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Log in
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signin">Sign in</a>
+          </li>
+          
+          
+        </ul>
+      </div>
+    </div>
+    
+  </nav>
+
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card mt-5">
+         <div class="card-header display-4">     {{ produit.title }}  </div>
+         <div class="card-body">     
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <img class="img-fluid" src=" {{ produit.urlImage }}" />
+                </div>
+                <div class="col-md-8 mt-5 text-md-left text-center">
+                  
+                            
+                            <p> {{ produit.description }}</p>
+                            <h5> {{ produit.price }}</h5>
+                            
+                            
+                
+                    </div>
+            </div>
+            </div>
+        </div>
+         <div class="card-footer text-right"> <a href="/" class="btn btn-primary">Back !!</a>   </div>
+     </div>
+
+{% endblock %}

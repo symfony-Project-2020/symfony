@@ -1,0 +1,24 @@
+{% extends 'base.admin.html.twig'%}
+
+{% block title %} Edit Product {% endblock %}
+
+
+
+
+{% block body %}
+ 
+     
+  <div class="container">
+        <div class="row mt-5">
+            <div class="col-md-6 offset-md-3">
+                {{ form_start(form) }}
+                {{ form_widget(form)}}
+                <button type="submit" class="form-control btn btn-primary mb-5">Edit product</button>
+                {{ form_end(form) }}     
+            </div>
+        </div>
+    </div>
+
+         
+{% endblock %}
+
