@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+{% block title %}My commands{% endblock %}
+
+{% block body %}
+     <table class="table table-hover mt-5">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Date</th>
+            <th scope="col">Total price</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for command in commands %}
+        <tr class="table">
+            <th scope="row">{{command.id}}</th>
+            <td>{{command.dateCommande | date('Y-m-d') }}</td>
+            <td>&euro; {{command.totalPrice}}</td>
+            <td>
+                <a class="btn btn-info text-white text-right" href="{{ path('command_lignes',{'id': command.id })}}"><i class="fas fa-eye"></i></a>
+                <a class="btn btn-danger text-white text-right" href="#"><i class="fas fa-trash-alt"></i></a>
+            </td>
+            </tr>
+    {% endfor %}   
+        </tbody>
+    </table>
+{% endblock %}

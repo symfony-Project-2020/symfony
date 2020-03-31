@@ -5,9 +5,13 @@ namespace AppBundle\Controller;
 use DateTime;
 use Faker\Factory;
 use AppBundle\Entity\Client;
+use AppBundle\Entity\EnCours;
 use AppBundle\Entity\Produit;
 use AppBundle\Entity\Commande;
+use AppBundle\Entity\LignesCommande;
+use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -56,6 +60,8 @@ class FakeControllerController extends Controller
 
         $entityManager = $this->getDoctrine()->getManager();
 
+        /* $entityManager = $this->getDoctrine()->getManager();
+
           //gerer les produits
           $produits = [];
           for ($i = 0; $i < 10; $i++) {
@@ -69,14 +75,14 @@ class FakeControllerController extends Controller
     
             $entityManager->persist($product);
         }
-
+ */
 
         //gerer les utilisateur
-        $clients = [];
+       /*  $clients = [];
 
-        $genres = ['men','female'];
+        $genres = ['men','female']; */
 
-        for($i = 0; $i < 10; $i++){
+       /*  for($i = 0; $i < 10; $i++){
 
             $client = new Client();
 
@@ -96,17 +102,34 @@ class FakeControllerController extends Controller
                    $entityManager->persist($client);
         }
 
-
+ */
             //gerer les commandes
             
             
-            for($i = 0; $i < 10; $i++){
+           /*  for($i = 0; $i < 10; $i++){
                 $client = $clients[mt_rand(0, count($clients) - 1)];
                 $commande = new Commande();
                 $commande->setClient($client)
                          
                          ->setTotalPrice(mt_rand(10, 100));
                     $entityManager->persist($commande);
+            } */
+
+
+            //gerer les lignes de commandes
+            for($i = 0; $i < 10; $i++){
+                $commands = $this->getDoctrine()->getRepository(Commande::class)->findAll();
+                $products = $this->getDoctrine()->getRepository(Produit::class)->findAll();
+                $lignesCommand = new LignesCommande();
+
+                
+                
+                $lignesCommand->setCommande($commands[mt_rand(1,20)])
+                              ->setProduit($products[mt_rand(1,20)])
+                              ->setQuantity(mt_rand(1,3))
+                              ->setPrixUnitaire(100);
+                              
+                    $entityManager->persist($lignesCommand);
             }
 
         
@@ -118,5 +141,25 @@ class FakeControllerController extends Controller
 
         return new Response('created');
     } 
+
+    /**
+     * @Route("/encours/{id}", name="ajax_call")
+     */
+    public function addEncoursAction($id, ObjectManager $manager)
+    {
+        
+        $client = $this->getUser();
+        $encours = new EnCours();
+        $encours->setIdProduct($id)
+                ->setClient($client);
+        $manager->persist($encours);
+        $manager->flush();
+
+        $repositoryCommandEncours = $this->getDoctrine()->getRepository(EnCours::class);
+        $commandEncours = $repositoryCommandEncours->findByClient($client);
+
+        return JsonResponse($commandEncours);
+
+    }
 
 }

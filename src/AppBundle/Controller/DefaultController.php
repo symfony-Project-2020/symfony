@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\EnCours;
 use AppBundle\Entity\Produit;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +17,15 @@ class DefaultController extends Controller
       
         $repositoryProduit = $this->getDoctrine()->getRepository(Produit::class);
         $produits = $repositoryProduit->findAll();
+
+       
+        
         // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', ['produits' => $produits]);
+        return $this->render('default/index.html.twig', [
+            'produits' => $produits,
+           
+            ]);
     }
+
+    
 }

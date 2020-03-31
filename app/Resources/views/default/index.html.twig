@@ -6,8 +6,19 @@
      
   <!-- Page Content -->
   
+{% if commandEnCours | length > 0 %}
+   <div id="command-div" class="fixed-bottom bg-dark text-center p-3">
+           <div class="container">
+                          <div class="row">
+                              <div class="col-6 offset-3">
+                                    <a id="rapport" class="btn btn-warning center form-control text-white" href="#">
+                                    You have already {{commandEnCours | length}} products to <strong>Command Now</strong></a>
+                              </div>
+                          </div>
+            </div> 
+   </div>
 
-   
+  {% endif %}
    
     <!-- Jumbotron Header -->
     <header class="jumbotron my-4">
@@ -18,12 +29,15 @@
 
     <!-- Page Features -->
 
-    <div class="row text-center">
+    
+    
+    
 
+    <div class="row text-center">
    {% for produit in produits %}
       {% set url = path('produit_show', {'id' : produit.id} ) %}
       <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
+        <div class="card h-100" data-product="{{produit.id}}">
           <a href="{{url }}">
             <img class="card-img-top" src="{{ produit.urlImage }}" alt="">
           </a>
@@ -38,31 +52,49 @@
           <div class="card-footer">
             <div class="row">
                <div class="col-6">
+                
                     <a href="{{ url }}" class="btn btn-outline-primary btn-sm btn-block">Show</a>
+               
                </div>
                <div class="col-6">
-                    <a href="#" class="btn btn-outline-success btn-sm btn-block">Command</a>
+               {% if app.user %}
+                    <button class="btn btn-outline-success btn-sm btn-block command"
+                  {% for cmd in commandEnCours %}
+                          {% if cmd.idProduct == produit.id %} disabled {% endif %}
+                  {% endfor %}>Command</button>
+              {% endif %}
                </div>
            </div>
           </div>
         </div>
       </div>
   {% endfor %}
-    </div>
-    <!-- /.row -->
-
-
-  <!-- /.container -->
-
-  <!-- Footer -->
   
+    </div>
+     {% endblock %}
 
+  {% block javascripts %}
+        <script>
+           
+            
+            $(document).ready(function(){
+              
+                  $('.command').click(function(event){
 
- 
+                    let productId = $(this).closest(".card").attr('data-product');
 
-   {% endblock %}
+                    let url = "/encours/"+productId;
+                    var xhttp = new XMLHttpRequest();
+                    xhttp.open("POST", url, true);
+                    xhttp.send();
 
+                   
+                    
+                    
+                    $(this).attr('disabled','disabled');
+                  });
+              });
+        
+        </script>
+  {% endblock %}
 
-{% block stylesheets %}
-
-{% endblock %}

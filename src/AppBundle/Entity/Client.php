@@ -4,14 +4,19 @@ namespace AppBundle\Entity;
 
 use AppBundle\Entity\Commande;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Client
  *
  * @ORM\Table(name="client")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ClientRepository")
+ * @UniqueEntity(
+ *  fields={"email"},
+ *     message="This email is already use it."
+ * )
  */
 class Client implements UserInterface
 {
@@ -22,6 +27,8 @@ class Client implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\OneToMany(targetEntity="Commande", mappedBy="Client")
+     * @ORM\OneToMany(targetEntity="Encours", mappedBy="Client")
+     * 
      */
     private $id;
 
@@ -29,6 +36,10 @@ class Client implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
+     * @Assert\Email(
+     *     message = "The email '{{ value }}' is not a valid email.",
+     *     checkMX = true
+     * )
      */
     private $email;
 

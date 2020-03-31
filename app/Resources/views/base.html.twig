@@ -10,7 +10,10 @@
         <link href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
         <!-- Custom styles for this template -->
         <link href="{{ asset('css/heroic-features.css') }}" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/379ed65348.js" crossorigin="anonymous"></script>
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
     </head>
 
     <body>
@@ -20,16 +23,17 @@
        
 
         <div class="container">
-        
-        {% block body %}{% endblock %}
-        
-        </div>
-        
+                 {% block body %}{% endblock %}
+          </div>
+        {% block javascripts %}{% endblock %}
+      
+          
  
           {% include 'partials/footer.html.twig' %}
           
-        {% block javascripts %}{% endblock %}
+       
          <script src="{{asset('vendor/jquery/jquery.min.js') }}"></script>
          <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+          
     </body>
 </html>

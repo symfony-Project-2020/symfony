@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\EnCours;
 use AppBundle\Entity\Produit;
 use AppBundle\Form\ProduitType;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,16 @@ class ProduitsControllerController extends Controller
     {
         $repositoryProduit = $this->getDoctrine()->getRepository(Produit::class);
         $produits = $repositoryProduit->findAll();
-        return $this->render('default/index.html.twig', ['produits' => $produits]);
+
+        $client = $this->getUser();
+
+        $repositoryCommandEncours = $this->getDoctrine()->getRepository(EnCours::class);
+        $commandEncours = $repositoryCommandEncours->findByClient($client);
+
+        return $this->render('default/index.html.twig', [
+            'produits' => $produits,
+            'commandEnCours' => $commandEncours
+            ]);
     }
 
 

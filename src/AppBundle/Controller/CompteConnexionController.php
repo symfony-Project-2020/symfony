@@ -6,6 +6,7 @@ use AppBundle\Entity\Client;
 use AppBundle\Form\ClientType;
 use AppBundle\Form\CompteType;
 use AppBundle\Entity\PasswordUpdate;
+use Symfony\Component\Form\FormError;
 use AppBundle\Form\PasswordUpdateType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -116,12 +117,39 @@ class CompteConnexionController extends Controller
      * @Route("/edit/password", name="user_password")
      * 
      */
-    public function editPasswordAction(Request $request,ObjectManager $manager)
+    public function editPasswordAction(Request $request,ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
         $password = new PasswordUpdate();
+
+        $client = $this->getUser();
         
         $formForPass = $this->createForm(PasswordUpdateType::class, $password);
+
+        $formForPass->handleRequest($request);
         
+        if($formForPass->isValid() && $formForPass->isSubmitted()){
+            //verify the old password is correct or not
+            if(!password_verify($password->getAncienPassword(), $client->getPassword())){
+                //error the old password isn't correct
+                $formForPass->get('ancienPassword')->addError(new FormError('Your need to verify your 
+                actual password'));
+            }else{
+                $newPassword = $password->getNewPassword();
+                $newPassword = $encoder->encodePassword($client, $newPassword);
+
+                $client->setPassword($newPassword);
+
+                $manager->persist($client);
+                $manager->flush();
+
+                $this->addFlash(
+                    'success','Your password is suuccefuly updated'
+                );
+
+               return $this->redirectToRoute('user_profile');
+            }
+        }
+
         return $this->render('@App/ProduitsController/profilePass.html.twig',[
             'form'=>$formForPass->createView()
         ]);
