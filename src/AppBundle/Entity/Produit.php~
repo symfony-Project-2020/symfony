@@ -25,6 +25,7 @@ class Produit
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\OneToMany(targetEntity="LignesCommande", mappedBy="produit")
+     * @ORM\OneToMany(targetEntity="EnCours", mappedBy="idProduit")
      */
     private $id;
 

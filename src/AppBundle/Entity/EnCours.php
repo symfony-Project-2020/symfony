@@ -22,11 +22,20 @@ class EnCours
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idProduct", type="integer", unique=true)
+     * @var Produit
+     * 
+     *@ORM\ManyToOne(targetEntity="Produit", inversedBy="id")
+     *@ORM\JoinColumn(name="idProduit", referencedColumnName="id")
      */
     private $idProduct;
+
+    /**
+     * @var integer
+     *
+     *@ORM\Column(name="quantity", type="integer")
+     */
+    private $quantity;
+
 
     /**
      * @var Client
@@ -93,5 +102,29 @@ class EnCours
     public function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * Set quantity
+     *
+     * @param integer $quantity
+     *
+     * @return EnCours
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
+
+        return $this;
+    }
+
+    /**
+     * Get quantity
+     *
+     * @return integer
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
     }
 }

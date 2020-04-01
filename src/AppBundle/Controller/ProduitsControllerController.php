@@ -8,6 +8,7 @@ use AppBundle\Form\ProduitType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -23,10 +24,10 @@ class ProduitsControllerController extends Controller
         $repositoryProduit = $this->getDoctrine()->getRepository(Produit::class);
         $produits = $repositoryProduit->findAll();
 
-        $client = $this->getUser();
+        $user = $this->getUser();
 
         $repositoryCommandEncours = $this->getDoctrine()->getRepository(EnCours::class);
-        $commandEncours = $repositoryCommandEncours->findByClient($client);
+        $commandEncours = $repositoryCommandEncours->findAll();
 
         return $this->render('default/index.html.twig', [
             'produits' => $produits,
@@ -66,12 +67,31 @@ class ProduitsControllerController extends Controller
     /**
      * permet d'afficher un seul produit
      * @Route("/product/{id}", name="produit_show")
-     * @return Response
+     * @return JsonResponse
      */
-    public function showProductAction($id, Produit $produit)
+    public function showProductAction($id)
     {
+       
+        $produit = $this->getDoctrine()->getRepository(Produit::class)->find($id);
+
+        $idPro = $produit->getId();
+        $title = $produit->getTitle();
+        $description = $produit->getDescription();
+        $image = $produit->getUrlImage();
+        $price = $produit->getPrice();
+
+        return new JsonResponse(['result' => 'ok', 
+                                'id' => $idPro, 
+                                'title' => $title,
+                                'description' => $description,
+                                'image' => $image,
+                                'price'=> $price
+        ]);
+       
+
+       
         //recuperation du produit qui correspant a l'id
-        return $this->render('@App/ProduitsController/productView.html.twig', ['produit' => $produit]);
+        //return $this->render('@App/ProduitsController/productView.html.twig', ['produit' => $produit, 'test'=>$produit]);
     }
 
 

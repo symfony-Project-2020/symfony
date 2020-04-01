@@ -5,9 +5,12 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\Commande;
 use AppBundle\Entity\LignesCommande;
+use AppBundle\Entity\EnCours;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class ClientController extends Controller
 {
@@ -35,6 +38,36 @@ class ClientController extends Controller
             'command'=>$command,
             'lignesCommand'=>$lignesCommand,
         ]);
+    }
+
+
+    /**
+     * @Route("/commander", name="commander")
+     */
+    public function doCommandAction()
+    {
+        $client = $this->getUser();
+
+        $commands = $this->getDoctrine()->getRepository(EnCours::class)->findByClient($client);
+        
+        return $this->render('@App/Client/commandEncours.html.twig',[
+            'commands'=>$commands,
+        ]);
+    }
+
+
+    /**
+     * @Route("/encours/{id}", name="command_encours")
+     */
+    public function deleteProductEncoursAction(EnCours $id, ObjectManager $em)
+    {
+        $client = $this->getUser();
+
+        $itemEncours = $this->getDoctrine()->getRepository(EnCours::class)->find($id);
+        $em -> remove($itemEncours);
+        $em -> flush();
+        
+        return new Response('deleted');
     }
 
 

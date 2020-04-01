@@ -1,0 +1,71 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Submit commands{% endblock %}
+
+{% block body %}
+
+<div class="row my-3">
+        <div class="col h-100">
+            <button class="btn btn-success form-control text- mt-3">Sends your command</button>
+        </div>
+        <div class="col">
+            <h1 class="text-right">Total : <span id="total"></span>&nbsp DH</h1>
+        </div>
+    </div>
+     <table id="myTable" class="table table-hover mt-5">
+        <thead>
+            <tr>
+            <th scope="col">Product</th>
+            <th scope="col">PU</th>
+            <th scope="col">Qte</th>
+            <th scope="col">PT</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for command in commands %}
+        <tr class="table">
+            <th scope="row">{{command.idProduct.title}}</th>
+            <td>{{command.idProduct.price }}</td>
+            <td>{{ command.quantity }}</td>
+            <td></td>
+            <td>
+{#                 <a class="btn btn-info text-white text-right" href="{{ path('command_lignes',{'id': command.id })}}"><i class="fas fa-eye"></i></a>
+ #}                <a class="btn btn-danger text-white text-right" href="{{ path('command_encours',{'id': command.id })}}"><i class="fas fa-trash-alt"></i></a>
+            </td>
+            </tr>
+    {% endfor %}   
+        </tbody>
+    </table>
+    
+{% endblock %}
+
+{% block javascripts %}
+<script>
+        $(document).ready( function () {
+            $('#myTable').DataTable({
+                searching: false, 
+                //paging: false, 
+                info: false
+                })
+       });
+
+        var table = document.getElementById('myTable'); 
+        var total = 0;
+        var rows = table.getElementsByTagName('tr');
+        var i, j, cells, customerId;
+
+            for (i = 0, j = rows.length; i < j; ++i) {
+                cells = rows[i].getElementsByTagName('td');
+                if (!cells.length) {
+                    continue;
+                }
+                
+                cells[2].innerHTML = cells[0].innerHTML * cells[1].innerHTML;
+                total += (+cells[2].innerHTML);
+            }
+
+            document.getElementById('total').textContent = total; 
+            
+    </script>
+{% endblock %}

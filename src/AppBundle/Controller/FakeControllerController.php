@@ -143,22 +143,29 @@ class FakeControllerController extends Controller
     } 
 
     /**
-     * @Route("/encours/{id}", name="ajax_call")
+     * @Route("/encours/{id}/{qte}", name="ajax_call")
      */
-    public function addEncoursAction($id, ObjectManager $manager)
+    public function addEncoursAction($id,$qte,ObjectManager $manager)
     {
         
+        $repositoryProduit = $this->getDoctrine()->getRepository(Produit::class);
+        $produit = $repositoryProduit->find($id);
+
         $client = $this->getUser();
+
         $encours = new EnCours();
-        $encours->setIdProduct($id)
+
+        $encours->setIdProduct($produit)
+                ->setQuantity($qte)
                 ->setClient($client);
+
         $manager->persist($encours);
         $manager->flush();
 
         $repositoryCommandEncours = $this->getDoctrine()->getRepository(EnCours::class);
         $commandEncours = $repositoryCommandEncours->findByClient($client);
 
-        return JsonResponse($commandEncours);
+        return JsonResponse($qte);
 
     }
 

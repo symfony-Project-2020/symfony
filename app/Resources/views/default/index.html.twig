@@ -6,7 +6,7 @@
      
   <!-- Page Content -->
   
-{% if commandEnCours | length > 0 %}
+{# {% if commandEnCours | length > 0 %}
    <div id="command-div" class="fixed-bottom bg-dark text-center p-3">
            <div class="container">
                           <div class="row">
@@ -18,7 +18,7 @@
             </div> 
    </div>
 
-  {% endif %}
+  {% endif %} #}
    
     <!-- Jumbotron Header -->
     <header class="jumbotron my-4">
@@ -33,44 +33,104 @@
     
     
 
-    <div class="row text-center">
-   {% for produit in produits %}
-      {% set url = path('produit_show', {'id' : produit.id} ) %}
-      <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100" data-product="{{produit.id}}">
-          <a href="{{url }}">
-            <img class="card-img-top" src="{{ produit.urlImage }}" alt="">
-          </a>
-          <div class="card-body">
-          <a href="{{url }}">
-            <h4 class="card-title">{{ produit.title }}</h4>
-          </a>
-            <p class="card-text">{{ produit.description }}</p>
-            <h2>{{ produit.price }} Dh</h2>
-          
+  <div class="row text-center">
+      {% for produit in produits %}
+          {% set url = path('produit_show', {'id' : produit.id} ) %}
+          <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card h-100" data-product="{{produit.id}}">
+              <a href="{{url }}">
+                <img class="card-img-top" src="{{ produit.urlImage }}" alt="">
+              </a>
+              <div class="card-body">
+                      <a href="{{url }}">
+                      <h4 class="card-title">{{ produit.title }}</h4>
+                    </a>
+                      <p class="card-text">{{ produit.description }}</p>
+                      <h2>{{ produit.price }} Dh</h2>
+                      
+
+              </div>
+              <div class="card-footer">
+                <div class="row">
+                    {% if app.user %}
+                   
+                      <input type="button" id = {{ produit.id }} class="btn btn-outline-primary btn-sm btn-block view-data" data-toggle="modal" 
+                      data-target="#myModal" value = "Show"            
+                         >
+                      {% endif %}    
+              </div>
+              </div>
+            </div>
           </div>
-          <div class="card-footer">
-            <div class="row">
-               <div class="col-6">
+      {% endfor %}
+  </div>
+   
+
+
+      <div class="modal fade" role="dialog" id="myModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <input type="hidden" id="productIdJson" value="">
+                  <h5 class="modal-title text-center" id="productTitleJson">Product info</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body" id="info-produit">
+                  
+                    <div class="container">
+                              <div class="row">
+                                  <img style="height=100px; width=100px;" class="img-fluid" src="" id="productImageJson"/>
+                              </div> 
+                              <div class="row mt-2">
+                                  <p id="productDescriptionJson"></p>
+                              </div>
+                              
+                                  
+                              
+                              <div class="row">
+                                    <div class="col">
+                                      <h2 id="productPriceJson"></h2>
+                                    </div>
+                                    <div class="col">
+                                      <div class="row">
+                                        <div class="col text-right">
+                                              <h3>Qte :<h3>
+                                        </div>
+                                        <div class="col ">
+                                              <input class="form-control" id="productQuantity" type="number" value="1">
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-primary btn-sm btn-block" id="adToCartBtn">Add to your chart</button>
+                                  </div>
+                                </div>
+                              </div>
+
+                    <div class="row d-none mt-3" id="ftCommand" >
+                    <div class="col-6">
+                      <a type="button" class="btn btn-success btn-sm btn-block text-white" href="{{ path('commander') }}"><i class="fa fa-check" aria-hidden="true"> </i>Submit your command</a>
+                    </div>
+                    <div class="col-6">
+                      <button type="button" class="btn btn-secondary btn-sm btn-block" data-dismiss="modal">Add other product</button>
+                    </div>
+                  </div>
+                    
+                      </div>
+                  </div>
+
                 
-                    <a href="{{ url }}" class="btn btn-outline-primary btn-sm btn-block">Show</a>
-               
-               </div>
-               <div class="col-6">
-               {% if app.user %}
-                    <button class="btn btn-outline-success btn-sm btn-block command"
-                  {% for cmd in commandEnCours %}
-                          {% if cmd.idProduct == produit.id %} disabled {% endif %}
-                  {% endfor %}>Command</button>
-              {% endif %}
-               </div>
-           </div>
+                <div class="modal-footer">
+                <div class="container">
+                  
+              </div>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-  {% endfor %}
-  
-    </div>
      {% endblock %}
 
   {% block javascripts %}
@@ -79,22 +139,56 @@
             
             $(document).ready(function(){
               
-                  $('.command').click(function(event){
+                  
 
-                    let productId = $(this).closest(".card").attr('data-product');
-
-                    let url = "/encours/"+productId;
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.open("POST", url, true);
-                    xhttp.send();
-
-                   
+                  $(".view-data").click(function(){
+                    //get the id of the product
+                    let idProduct = $(this).attr("id");
+                    let url ="/product/"+idProduct;
                     
-                    
-                    $(this).attr('disabled','disabled');
+                    //send ajax request
+                    $.ajax({
+                      url:url,
+                      method:"post",
+                      data:idProduct,
+                      async: true,
+                      success:function(data){
+                        console.log(data);
+                        $("#productIdJson").val(data.id);
+                        $("#productTitleJson").html(data.title);
+                        $("#productPriceJson").html(data.price + ' DH');
+                        $("#productDescriptionJson").html(data.description);
+                        $("#productImageJson").attr('src',data.image);
+                        $("#myModal").modal("show");
+                      }
+                    });
+
+                    //add to command encours
+                    $('#adToCartBtn').click(function(){
+
+                      let quantity = $("#productQuantity").val();
+                      let idProduct = $("#productIdJson").val();
+                      let url = "/encours/"+idProduct+"/"+quantity;
+                      //send request to server
+                      $.ajax({
+                      url: url,
+                      method:"post",
+                      data:{idProduct:idProduct,quantity:quantity},
+                      async: true,
+                      success:function(data){
+                        console.log(data);
+                      }
+                    });
+
+                      //$(`.view-data[id=${idProduct}]`).addClass("bg-warning").prop('disabled', true).attr("value","Already selected");
+                      $("#ftCommand").removeClass("d-none");
+                    });
                   });
+
+                  //
               });
         
+      
         </script>
   {% endblock %}
 
