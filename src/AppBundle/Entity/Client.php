@@ -2,8 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Role;
 use AppBundle\Entity\Commande;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinTable;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -61,6 +64,16 @@ class Client implements UserInterface
      * @ORM\Column(name="urlAvatar", type="string", length=255)
      */
     private $urlAvatar;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Role", cascade={"persist"})
+     * 
+     */
+    private $userRoles;
+
+    
+
+
 
 
     /**
@@ -145,9 +158,7 @@ class Client implements UserInterface
         return $this->urlAvatar;
     }
 
-    public function getRoles(){
-            return ['roles_user'];
-    }
+    
 
     public function getSalt(){}
 
@@ -156,4 +167,56 @@ class Client implements UserInterface
     }
 
     public function eraseCredentials(){ }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->userRoles = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function getRoles(){
+        
+                $roles = $this->userRoles->map(function($el){
+                        return $el->getTitle();
+                    })->toArray();
+                $roles[] = "ROLES_USER";
+                return $roles;
+        }
+
+ 
+
+    /**
+     * Add userRole
+     *
+     * @param \AppBundle\Entity\Role $userRole
+     *
+     * @return Client
+     */
+    public function addUserRole(\AppBundle\Entity\Role $userRole)
+    {
+        $this->userRoles[] = $userRole;
+
+        return $this;
+    }
+
+    /**
+     * Remove userRole
+     *
+     * @param \AppBundle\Entity\Role $userRole
+     */
+    public function removeUserRole(\AppBundle\Entity\Role $userRole)
+    {
+        $this->userRoles->removeElement($userRole);
+    }
+
+    /**
+     * Get userRoles
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getUserRoles()
+    {
+        return $this->userRoles;
+    }
 }

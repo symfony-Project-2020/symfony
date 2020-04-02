@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Client;
+use AppBundle\Entity\Produit;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -27,7 +29,7 @@ class EnCours
      *@ORM\ManyToOne(targetEntity="Produit", inversedBy="id")
      *@ORM\JoinColumn(name="idProduit", referencedColumnName="id")
      */
-    private $idProduct;
+    private $produit;
 
     /**
      * @var integer
@@ -35,6 +37,7 @@ class EnCours
      *@ORM\Column(name="quantity", type="integer")
      */
     private $quantity;
+
 
     /**
      * @var Client
@@ -55,38 +58,15 @@ class EnCours
         return $this->id;
     }
 
-    /**
-     * Set idProduct
-     *
-     * @param integer $idProduct
-     *
-     * @return EnCours
-     */
-    public function setIdProduct($idProduct)
-    {
-        $this->idProduct = $idProduct;
-
-        return $this;
-    }
-
-    /**
-     * Get idProduct
-     *
-     * @return int
-     */
-    public function getIdProduct()
-    {
-        return $this->idProduct;
-    }
-
+   
+   
     /**
      * Set client
      *
-     * @param \AppBundle\Entity\Client $client
+     * Client $client
      *
-     * @return EnCours
      */
-    public function setClient(\AppBundle\Entity\Client $client = null)
+    public function setClient(Client $client)
     {
         $this->client = $client;
 
@@ -96,7 +76,7 @@ class EnCours
     /**
      * Get client
      *
-     * @return \AppBundle\Entity\Client
+     * Client
      */
     public function getClient()
     {
@@ -125,5 +105,29 @@ class EnCours
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    /**
+     * Set produit
+     *
+     * @param Produit $produit
+     *
+     * @return EnCours
+     */
+    public function setProduit(Produit $produit)
+    {
+        $this->produit = $produit;
+
+        return $this;
+    }
+
+    /**
+     * Get produit
+     *
+     * @return Produit
+     */
+    public function getProduit()
+    {
+        return $this->produit;
     }
 }

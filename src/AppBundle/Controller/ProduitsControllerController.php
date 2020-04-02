@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ProduitsControllerController extends Controller
 {
@@ -39,10 +40,14 @@ class ProduitsControllerController extends Controller
     /**
      * permet d'ajouter un produit
      * @Route("/product/new", name="new_produit")
+     * @IsGranted("ROLE_ADMIN")
+     * 
      * @return Response
      */
     public function addProductAction(Request $request, ObjectManager $manager)
     {
+        
+        
         $produit = new Produit();
 
         $form = $this->createForm(ProduitType::class, $produit);
@@ -71,7 +76,7 @@ class ProduitsControllerController extends Controller
      */
     public function showProductAction($id)
     {
-       
+        
         $produit = $this->getDoctrine()->getRepository(Produit::class)->find($id);
 
         $idPro = $produit->getId();
@@ -98,6 +103,7 @@ class ProduitsControllerController extends Controller
     /**
      * permet d'editerr un produit
      * @Route("/product/{id}/edit", name="produit_edit")
+     * IsGranted("ROLE_ADMIN")
      * @return Response
      */
     public function editProductAction(Request $request, Produit $produit, ObjectManager $manager)

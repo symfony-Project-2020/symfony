@@ -31,7 +31,7 @@ class Commande
     /**
      * @var Client
      *
-     * @ORM\ManyToOne(targetEntity="Client", inversedBy="id")
+     * @ORM\ManyToOne(targetEntity="Client", inversedBy="id", cascade={"persist"})
      * @ORM\JoinColumn(name="client_commande", referencedColumnName="id")
      */
     private $client;
@@ -59,23 +59,26 @@ class Commande
     
 
      /**
-     * @var float
+     * 
      *
-     * @ORM\Column(name="reference", type="text")
+     * @ORM\Column(name="reference", type="string")
      */
     private $reference;
 
+    
      /**
      * @ORM\PrePersist
      */
-    public function generateRandomString($length = 15) {
+    public function generateRandomString() {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
+
+        for ($i = 0; $i < 20; $i++) {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
-        return $this->reference = $randomString . $this->id;
+
+        return $this->reference = $randomString;
     }
 
 

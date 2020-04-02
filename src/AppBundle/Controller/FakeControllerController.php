@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use DateTime;
 use Faker\Factory;
+use AppBundle\Entity\Role;
 use AppBundle\Entity\Client;
 use AppBundle\Entity\EnCours;
 use AppBundle\Entity\Produit;
@@ -142,6 +143,8 @@ class FakeControllerController extends Controller
         return new Response('created');
     } 
 
+
+
     /**
      * @Route("/encours/{id}/{qte}", name="ajax_call")
      */
@@ -155,18 +158,53 @@ class FakeControllerController extends Controller
 
         $encours = new EnCours();
 
-        $encours->setIdProduct($produit)
+        $encours->setProduit($produit)
                 ->setQuantity($qte)
                 ->setClient($client);
 
         $manager->persist($encours);
         $manager->flush();
 
-        $repositoryCommandEncours = $this->getDoctrine()->getRepository(EnCours::class);
-        $commandEncours = $repositoryCommandEncours->findByClient($client);
+        $id = $encours->getId();
+        $idProduct = $encours->getIdProduct();
+        $qte = $encours->getQuantity();
+        
 
-        return JsonResponse($qte);
+       
+        return new JsonResponse(['result' => 'ok', 
+                                    'id' => $id, 
+                                    'idProduct' => $idProduct,
+                                    'qte' => $qte                                    
+                            ]);
 
+    }
+
+    /**
+     * @Route("/users", name="users_roles")
+     */
+    public function usersRolesAction(ObjectManager $manager)
+    {
+        $faker = Factory::create();
+
+        $adminRole = new Role();
+        $adminRole->setTitle('ROLE_ADMIN');
+        $manager->persist($adminRole);
+
+
+        $clientAdmin = new Client();
+        $hash = $this->encoder->encodePassword($clientAdmin, 'pass');
+        
+        $clientAdmin->setEmail($faker->email)
+                    ->setPassword($hash)
+                    ->setUrlAvatar($faker->imageUrl(640,480))
+                    ->addUserRole($adminRole);
+
+        $manager->persist($clientAdmin);
+
+        $manager->flush();
+
+        return new Response('cree');
+        
     }
 
 }

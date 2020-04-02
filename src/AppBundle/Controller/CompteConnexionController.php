@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -88,11 +89,13 @@ class CompteConnexionController extends Controller
 
     /**
       * permet d'editer le profile'
-     * @Route("/edit/profile", name="user_profile")
+     * @Route("/edit/{client}/profile", name="user_profile")
+     * IsGranted("ROLE_USER")
      * 
      */
-    public function editProfileAction(Request $request,ObjectManager $manager)
+    public function editProfileAction(Client $client, Request $request,ObjectManager $manager)
     {
+        
         $client = $this->getUser();
         $form = $this->createForm(CompteType::class, $client);
 
@@ -115,10 +118,15 @@ class CompteConnexionController extends Controller
       /**
       * permet d'editer le profile'
      * @Route("/edit/password", name="user_password")
+     * IsGranted("ROLE_USER")
      * 
      */
     public function editPasswordAction(Request $request,ObjectManager $manager, UserPasswordEncoderInterface $encoder)
     {
+        if(!$this->getUser()){
+            return $this->redirectToRoute('user_login');
+        }
+        
         $password = new PasswordUpdate();
 
         $client = $this->getUser();

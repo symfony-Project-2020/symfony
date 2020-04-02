@@ -27,7 +27,7 @@ class LignesCommande
     /**
      * @var Commande
      *
-     * @ORM\ManyToOne(targetEntity="Commande", inversedBy="id")
+     * @ORM\ManyToOne(targetEntity="Commande", inversedBy="id", cascade={"persist"})
      * @ORM\JoinColumn(name="ligne_commande", referencedColumnName="id")
      */
     private $commande;
@@ -47,12 +47,6 @@ class LignesCommande
      */
     private $quantity;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="prixUnitaire", type="float")
-     */
-    private $prixUnitaire;
 
     /**
      * @var float
@@ -60,14 +54,8 @@ class LignesCommande
      * @ORM\Column(name="prixTotal", type="float")
      */
     private $prixTotal;
-
-    /**
-     * @ORM\PrePersist
-     */
-    public function setTotal()
-    {
-        $this->prixTotal = $this->prixUnitaire * $this->quantity;
-    }
+    
+   
 
 
        /**
@@ -105,54 +93,17 @@ class LignesCommande
         return $this->quantity;
     }
 
-    /**
-     * Set prixUnitaire
-     *
-     * @param float $prixUnitaire
-     *
-     * @return LignesCommande
+    
+   /**
+     * @ORM\PrePersist
      */
-    public function setPrixUnitaire($prixUnitaire)
-    {
-        $this->prixUnitaire = $prixUnitaire;
-
-        return $this;
+    public function setTotalPrice(){
+        $this->prixTotal = $this->produit->getPrice() * $this->quantity;
     }
 
-    /**
-     * Get prixUnitaire
-     *
-     * @return float
-     */
-    public function getPrixUnitaire()
-    {
-        return $this->prixUnitaire;
-    }
+    
 
-    /**
-     * Set prixTotal
-     *
-     * @param float $prixTotal
-     *
-     * @return LignesCommande
-     */
-    public function setPrixTotal($prixTotal)
-    {
-        $this->prixTotal = $prixTotal;
-
-        return $this;
-    }
-
-    /**
-     * Get prixTotal
-     *
-     * @return float
-     */
-    public function getPrixTotal()
-    {
-        return $this->prixTotal;
-    }
-
+    
     /**
      * Set commande
      *
@@ -197,5 +148,29 @@ class LignesCommande
     public function getProduit()
     {
         return $this->produit;
+    }
+
+    /**
+     * Set prixTotal
+     *
+     * @param float $prixTotal
+     *
+     * @return LignesCommande
+     */
+    public function setPrixTotal($prixTotal)
+    {
+        $this->prixTotal = $prixTotal;
+
+        return $this;
+    }
+
+    /**
+     * Get prixTotal
+     *
+     * @return float
+     */
+    public function getPrixTotal()
+    {
+        return $this->prixTotal;
     }
 }
