@@ -176,14 +176,6 @@ class ProduitsControllerController extends Controller
         $repositoryCommands = $this->getDoctrine()->getRepository(Commande::class);
         $commands = $repositoryCommands->findAll();
 
-        $repositoryClient = $this->getDoctrine()->getRepository(Client::class);
-        $clients = $repositoryClient->findAll();
-
-        foreach($commands as $cmd){
-            $cmd->setClient($clients[mt_rand(1,30)]);
-            $manager->persist($cmd);
-        }
-
         $manager->flush();
 
         return $this->render('@App/ProduitsController/allCommands.html.twig',['commands'=>$commands]);
