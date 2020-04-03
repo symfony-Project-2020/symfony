@@ -71,6 +71,13 @@ class Client implements UserInterface
      */
     private $userRoles;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
     
 
 
@@ -218,5 +225,29 @@ class Client implements UserInterface
     public function getUserRoles()
     {
         return $this->userRoles;
+    }
+
+    /**
+     * Set deletedAt
+     *
+     * @param \DateTime $deletedAt
+     *
+     * @return Client
+     */
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
     }
 }

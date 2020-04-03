@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -140,10 +141,26 @@ class ProduitsControllerController extends Controller
     public function allClientsAction(ObjectManager $manager)
     {
         $repositoryClient = $this->getDoctrine()->getRepository(Client::class);
-        $clients = $repositoryClient->findAll();
+        $clients = $repositoryClient->findByDeletedAt(null);
 
         return $this->render('@App/ProduitsController/allClients.html.twig',['clients'=>$clients]);
 
+    }
+
+     /**
+     * @Route("/deleteClient/{id}", name="delete_client")
+     * @IsGranted("ROLE_ADMIN")
+     */
+    public function deleteClientAction(Client $id, ObjectManager $em)
+    {
+       
+        $id->setDeletedAt(new \DateTime());
+        
+        $em -> flush();
+        $this->addFlash(
+            'success','This client deleted succefuly'
+        );
+        return $this->redirectToRoute('all_clients');
     }
 
 
@@ -170,6 +187,41 @@ class ProduitsControllerController extends Controller
         $manager->flush();
 
         return $this->render('@App/ProduitsController/allCommands.html.twig',['commands'=>$commands]);
+
+    }
+
+
+    /**
+     * @Route("/encours/{id}/{qte}", name="ajax_call")
+     */
+    public function addEncoursAction($id,$qte,ObjectManager $manager)
+    {
+        
+        $repositoryProduit = $this->getDoctrine()->getRepository(Produit::class);
+        $produit = $repositoryProduit->find($id);
+
+        $client = $this->getUser();
+
+        $encours = new EnCours();
+
+        $encours->setProduit($produit)
+                ->setQuantity($qte)
+                ->setClient($client);
+
+        $manager->persist($encours);
+        $manager->flush();
+
+        $id = $encours->getId();
+        $idProduct = $encours->getIdProduct();
+        $qte = $encours->getQuantity();
+        
+
+       
+        return new JsonResponse(['result' => 'ok', 
+                                    'id' => $id, 
+                                    'idProduct' => $idProduct,
+                                    'qte' => $qte                                    
+                            ]);
 
     }
 

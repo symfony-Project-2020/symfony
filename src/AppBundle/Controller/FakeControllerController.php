@@ -24,66 +24,34 @@ class FakeControllerController extends Controller
         $this->encoder = $encoder;
     }
     /**
-     * @Route("/add")
+     * @Route("/database")
      */
-    public function addAction()
+    public function addAction(ObjectManager $em)
     {
         $faker = Factory::create();
 
         $entityManager = $this->getDoctrine()->getManager();
 
+
+        //creation des produits dans la base de donnees
+        $produits = [];
         for ($i = 0; $i < 20; $i++) {
             $product = new Produit();
             $product->setTitle($faker->word)
                     ->setDescription($faker->word)
-                    ->setPrice(mt_rand(10, 100))
+                    ->setPrice(mt_rand(90,1000)/3)
                     ->setUrlImage($faker->imageUrl(640,480));
     
-    
-            $entityManager->persist($product);
-        }
-    
-    
-        // actually executes the queries (i.e. the INSERT query)
-        $entityManager->flush();
-
-        return new Response('created');
-    } 
-
-
-
-    /**
-     * @Route("/addCommandes")
-     */
-    public function addFakeAction()
-    {
-        $faker = Factory::create();
-
-        $entityManager = $this->getDoctrine()->getManager();
-
-        /* $entityManager = $this->getDoctrine()->getManager();
-
-          //gerer les produits
-          $produits = [];
-          for ($i = 0; $i < 10; $i++) {
-            $product = new Produit();
-            $product->setTitle($faker->sentence())
-                    ->setDescription($faker->sentence())
-                    ->setPrice(mt_rand(10, 100))
-                    ->setUrlImage($faker->imageUrl(640,480));
-
             $produits[] = $product;
-    
-            $entityManager->persist($product);
+            $em->persist($product);
         }
- */
 
-        //gerer les utilisateur
-       /*  $clients = [];
+        //creation des clients dans la base de donnes
+        $clients = [];
 
-        $genres = ['men','female']; */
+        $genres = ['men','female'];
 
-       /*  for($i = 0; $i < 10; $i++){
+       for($i = 0; $i < 20; $i++){
 
             $client = new Client();
 
@@ -100,41 +68,35 @@ class FakeControllerController extends Controller
 
                    $clients[] = $client;
 
-                   $entityManager->persist($client);
+                   $em->persist($client);
         }
 
- */
-            //gerer les commandes
-            
-            
-           /*  for($i = 0; $i < 10; $i++){
+        //creation des commandes aleatoirement
+        $commands = [];
+        for($i = 0; $i < 20; $i++){
                 $client = $clients[mt_rand(0, count($clients) - 1)];
                 $commande = new Commande();
                 $commande->setClient($client)
-                         
                          ->setTotalPrice(mt_rand(10, 100));
-                    $entityManager->persist($commande);
-            } */
 
-
-            //gerer les lignes de commandes
-            for($i = 0; $i < 10; $i++){
-                $commands = $this->getDoctrine()->getRepository(Commande::class)->findAll();
-                $products = $this->getDoctrine()->getRepository(Produit::class)->findAll();
-                $lignesCommand = new LignesCommande();
-
-                
-                
-                $lignesCommand->setCommande($commands[mt_rand(1,20)])
-                              ->setProduit($products[mt_rand(1,20)])
-                              ->setQuantity(mt_rand(1,3))
-                              ->setPrixUnitaire(100);
-                              
-                    $entityManager->persist($lignesCommand);
+                $commands[] = $commande;
+                $em->persist($commande);
             }
 
-        
-      
+
+            //inserer les lignes de commandes pour des commandes
+            for($i = 0; $i < 60; $i++){
+                
+                $ligneCommand = new LignesCommande();
+                $myProduct = $produits[mt_rand(0,count($produits) - 1)];
+                $ligneCommand->setCommande($commands[mt_rand(0,count($commands) - 1)])
+                              ->setProduit($myProduct)
+                              ->setQuantity(mt_rand(1,3));
+                              
+                $entityManager->persist($ligneCommand);
+            }
+
+
     
     
         // actually executes the queries (i.e. the INSERT query)
@@ -144,67 +106,24 @@ class FakeControllerController extends Controller
     } 
 
 
-
     /**
-     * @Route("/encours/{id}/{qte}", name="ajax_call")
+     * @Route("/adminCreator")
      */
-    public function addEncoursAction($id,$qte,ObjectManager $manager)
-    {
-        
-        $repositoryProduit = $this->getDoctrine()->getRepository(Produit::class);
-        $produit = $repositoryProduit->find($id);
-
-        $client = $this->getUser();
-
-        $encours = new EnCours();
-
-        $encours->setProduit($produit)
-                ->setQuantity($qte)
-                ->setClient($client);
-
-        $manager->persist($encours);
-        $manager->flush();
-
-        $id = $encours->getId();
-        $idProduct = $encours->getIdProduct();
-        $qte = $encours->getQuantity();
-        
-
-       
-        return new JsonResponse(['result' => 'ok', 
-                                    'id' => $id, 
-                                    'idProduct' => $idProduct,
-                                    'qte' => $qte                                    
-                            ]);
-
-    }
-
-    /**
-     * @Route("/users", name="users_roles")
-     */
-    public function usersRolesAction(ObjectManager $manager)
+    public function addAdminAction(ObjectManager $em)
     {
         $faker = Factory::create();
+        $client = new Client();
+        $picture = 'https://randomuser.me/api/portraits/';
+        $pictureId = $faker->numberBetween(1, 99) . '.jpg';
+        $picture .= 'men/'. $pictureId;
+        $hash = $this->encoder->encodePassword($client, 'pass');
 
-        $adminRole = new Role();
-        $adminRole->setTitle('ROLE_ADMIN');
-        $manager->persist($adminRole);
+        $client->setEmail('admin@admin.com')
+               ->setPassword($hash)
+               ->setUrlAvatar($picture);
 
-
-        $clientAdmin = new Client();
-        $hash = $this->encoder->encodePassword($clientAdmin, 'pass');
-        
-        $clientAdmin->setEmail($faker->email)
-                    ->setPassword($hash)
-                    ->setUrlAvatar($faker->imageUrl(640,480))
-                    ->addUserRole($adminRole);
-
-        $manager->persist($clientAdmin);
-
-        $manager->flush();
-
-        return new Response('cree');
-        
+               $em->persist($client);
+               $em->flush();
+               return new Response('admin created');
     }
-
 }

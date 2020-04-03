@@ -17,7 +17,7 @@
         <tr class="table">
             <th scope="row">{{command.id}}</th>
             <td>{{command.dateCommande | date('Y-m-d') }}</td>
-            <td>&euro; {{command.totalPrice}}</td>
+            <td>&euro; {{command.totalPrice | number_format(2) }}</td>
             <td>
                 <a class="btn btn-info text-white text-right" href="{{ path('command_lignes',{'id': command.id })}}"><i class="fas fa-eye"></i></a>
 {#                 <a class="btn btn-danger text-white text-right" href="#"><i class="fas fa-trash-alt"></i></a>

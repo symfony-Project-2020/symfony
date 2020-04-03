@@ -92,6 +92,7 @@ class CompteConnexionController extends Controller
       * permet d'editer le profile'
      * @Route("/edit/{client}/profile", name="user_profile")
      * @IsGranted("ROLE_USER")
+     * @Security("has_role('ROLE_USER') and user.getDeletedAt() === null")
      * 
      */
     public function editProfileAction(Client $client, Request $request,ObjectManager $manager)

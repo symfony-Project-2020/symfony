@@ -26,8 +26,8 @@
             <th scope="row">{{command.reference}}</th>
             <th scope="row">{{command.dateCommande | date('Y-m-d') }}</th>
             <th scope="row">{{command.client.email}}</th>
-            <td><img class="rounded-circle w-25" src="{{ command.client.urlAvatar }}"/></td>
-            <td scope="row">{{command.totalPrice}}</td>
+            <td><img class="w-25 rounded-circle" src="{{ command.client.urlAvatar }}"/></td>
+            <td scope="row"><strong>{{command.totalPrice | number_format(2) }}</strong>&euro; </td>
         </tr>
     {% endfor %}   
         </tbody>

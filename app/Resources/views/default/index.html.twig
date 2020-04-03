@@ -47,13 +47,13 @@
                       <h4 class="card-title">{{ produit.title }}</h4>
                     </a>
                       <p class="card-text">{{ produit.description }}</p>
-                      <h2>{{ produit.price }} Dh</h2>
+                      <h2>{{ produit.price | number_format(2) }} Dh</h2>
                       
 
               </div>
               <div class="card-footer">
                 
-                    {% if app.user %}
+                    {% if app.user and app.user.deletedAt == null %}
                     <div class="row">
                       <input type="button" id = {{ produit.id }} class="btn btn-outline-primary btn-sm btn-block view-data" data-toggle="modal" 
                       data-target="#myModal" value = "Show">

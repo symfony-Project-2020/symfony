@@ -22,7 +22,7 @@
             <tr class="table">
                 <th scope="row">{{ligne.produit.id}}</th>
                 <th scope="row">{{ligne.produit.title}}</th>
-                <td>&euro;  {{ ligne.produit.price }}</td>
+                <td>&euro;  {{ ligne.produit.price | number_format(2)  }}</td>
                 <td>{{ ligne.quantity }}</td>
                 <td>&euro;  {{ ligne.produit.price * ligne.quantity }}</td>
             </tr>

@@ -31,6 +31,8 @@ security:
             logout:
                 path: user_logout
                 target: user_login
+
+            access_denied_handler: AppBundle\Controller\AccessDeniedHandler
             # activate different ways to authenticate
 
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
