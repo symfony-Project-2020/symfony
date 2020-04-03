@@ -32,7 +32,7 @@ class Commande
      * @var Client
      *
      * @ORM\ManyToOne(targetEntity="Client", inversedBy="id", cascade={"persist"})
-     * @ORM\JoinColumn(name="client_commande", referencedColumnName="id")
+     * @ORM\JoinColumn(name="client", referencedColumnName="id")
      */
     private $client;
 
@@ -94,9 +94,9 @@ class Commande
     }
 
     /**
-     * Set Client
+     * Set client
      *
-     * @param Client $Client
+     * @param Client $client
      *
      * 
      */
@@ -114,7 +114,7 @@ class Commande
      */
     public function getClient()
     {
-        return $this->Client;
+        return $this->client;
     }
 
     /**

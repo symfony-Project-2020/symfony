@@ -13,6 +13,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -90,7 +91,7 @@ class CompteConnexionController extends Controller
     /**
       * permet d'editer le profile'
      * @Route("/edit/{client}/profile", name="user_profile")
-     * IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_USER")
      * 
      */
     public function editProfileAction(Client $client, Request $request,ObjectManager $manager)
@@ -118,7 +119,7 @@ class CompteConnexionController extends Controller
       /**
       * permet d'editer le profile'
      * @Route("/edit/password", name="user_password")
-     * IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_USER")
      * 
      */
     public function editPasswordAction(Request $request,ObjectManager $manager, UserPasswordEncoderInterface $encoder)

@@ -36,6 +36,7 @@
   <div class="row text-center">
       {% for produit in produits %}
           {% set url = path('produit_show', {'id' : produit.id} ) %}
+          {% set editUrl = path('produit_edit',{'id':produit.id} ) %}
           <div class="col-lg-3 col-md-6 mb-4">
             <div class="card h-100" data-product="{{produit.id}}">
               <a href="{{url }}">
@@ -51,14 +52,19 @@
 
               </div>
               <div class="card-footer">
-                <div class="row">
+                
                     {% if app.user %}
-                   
+                    <div class="row">
                       <input type="button" id = {{ produit.id }} class="btn btn-outline-primary btn-sm btn-block view-data" data-toggle="modal" 
-                      data-target="#myModal" value = "Show"            
-                         >
+                      data-target="#myModal" value = "Show">
+                     </div> 
                       {% endif %}    
-              </div>
+                  
+                   {% if is_granted('ROLE_ADMIN') %}
+                   <div class="row mt-2">
+                            <a class="text-success w-100" href="{{editUrl}}"><button class="btn btn-outline-warning btn-sm btn-block ">Edit</button></a>
+                      </div>  
+                         {% endif %}
               </div>
             </div>
           </div>

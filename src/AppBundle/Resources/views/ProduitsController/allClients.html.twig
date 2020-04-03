@@ -1,0 +1,50 @@
+{% extends 'base.html.twig'%}
+
+{% block title %} All clients {% endblock %}
+
+
+
+
+{% block body %}
+
+
+    <table id="tableClient" class="table table-hover mt-5">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Image</th>
+            <th scope="col">Email</th>
+            <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for client in clients %}
+        <tr class="table">
+            <th scope="row">{{client.id}}</th>
+            <td><img class="rounded-circle w-25" src="{{ client.urlAvatar }}"/></td>
+            <td>{{ client.email }}</td>
+            <td>
+                <a class="btn btn-info text-white text-right" href="#"><i class="fas fa-eye"></i></a>
+                <a class="btn btn-danger text-white text-right" href="#"><i class="fas fa-trash-alt"></i></a>
+           </td>
+            </tr>
+    {% endfor %}   
+        </tbody>
+    </table>  
+
+
+{% endblock %}
+
+{% block javascripts %}
+            <script>
+                    $(document).ready( function () {
+                        $('#tableClient').DataTable({
+                            searching: true, 
+                            paging: true, 
+                            info: true
+                            });
+                    });
+
+            </script>
+
+{% endblock %}

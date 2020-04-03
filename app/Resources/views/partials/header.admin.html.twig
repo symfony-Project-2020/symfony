@@ -6,14 +6,32 @@
             </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/login">Log in
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/signin">Sign in</a>
-          </li>
+          
+          {% if app.user %}
+                
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Our products</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Our clients</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">All commands</a>
+                </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ path('user_logout') }}">Log out</a>
+                  </li>
+                  <li class="mt-1 text-right nav-item">
+                  <img class="rounded-circle w-25" src="{{ app.user.urlAvatar}}"/>
+                </li>
+          {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('user_login') }}">Log in</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('user_signin') }}">Sign in</a>
+                </li>
+          {% endif %} 
           
           
         </ul>

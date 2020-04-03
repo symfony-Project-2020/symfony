@@ -2,8 +2,10 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Client;
 use AppBundle\Entity\EnCours;
 use AppBundle\Entity\Produit;
+use AppBundle\Entity\Commande;
 use AppBundle\Form\ProduitType;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Common\Persistence\ObjectManager;
@@ -103,7 +105,7 @@ class ProduitsControllerController extends Controller
     /**
      * permet d'editerr un produit
      * @Route("/product/{id}/edit", name="produit_edit")
-     * IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_ADMIN")
      * @return Response
      */
     public function editProductAction(Request $request, Produit $produit, ObjectManager $manager)
@@ -126,6 +128,49 @@ class ProduitsControllerController extends Controller
 
 
         return $this->render('@App/ProduitsController/editProduit.html.twig',['form'=>$form->createView()]);
+    }
+
+    /**
+     * tous les produit index page
+     * @Route("/allClients", name="all_clients")
+     * @IsGranted("ROLE_ADMIN")
+     * @return Response
+     * 
+     */
+    public function allClientsAction(ObjectManager $manager)
+    {
+        $repositoryClient = $this->getDoctrine()->getRepository(Client::class);
+        $clients = $repositoryClient->findAll();
+
+        return $this->render('@App/ProduitsController/allClients.html.twig',['clients'=>$clients]);
+
+    }
+
+
+    /**
+     * tous les produit index page
+     * @Route("/allCommands", name="all_commands")
+     * @IsGranted("ROLE_ADMIN")
+     * @return Response
+     * 
+     */
+    public function allCommandsAction(ObjectManager $manager)
+    {
+        $repositoryCommands = $this->getDoctrine()->getRepository(Commande::class);
+        $commands = $repositoryCommands->findAll();
+
+        $repositoryClient = $this->getDoctrine()->getRepository(Client::class);
+        $clients = $repositoryClient->findAll();
+
+        foreach($commands as $cmd){
+            $cmd->setClient($clients[mt_rand(1,30)]);
+            $manager->persist($cmd);
+        }
+
+        $manager->flush();
+
+        return $this->render('@App/ProduitsController/allCommands.html.twig',['commands'=>$commands]);
+
     }
 
      

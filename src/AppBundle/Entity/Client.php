@@ -29,7 +29,7 @@ class Client implements UserInterface
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\OneToMany(targetEntity="Commande", mappedBy="Client")
+     * @ORM\OneToMany(targetEntity="Commande", mappedBy="client")
      * @ORM\OneToMany(targetEntity="Encours", mappedBy="Client")
      * 
      */
@@ -180,7 +180,7 @@ class Client implements UserInterface
                 $roles = $this->userRoles->map(function($el){
                         return $el->getTitle();
                     })->toArray();
-                $roles[] = "ROLES_USER";
+                $roles[] = "ROLE_USER";
                 return $roles;
         }
 

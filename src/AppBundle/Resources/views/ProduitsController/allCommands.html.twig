@@ -1,0 +1,51 @@
+{% extends 'base.html.twig'%}
+
+{% block title %} All commands {% endblock %}
+
+
+
+
+{% block body %}
+
+
+    <table id="tableCommands" class="table table-hover mt-5">
+        <thead>
+            <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Ref</th>
+            <th scope="col">Date</th>
+            <th scope="col">Client  email</th>
+            <th scope="col">Client  image</th>
+            <th scope="col">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for command in commands %}
+        <tr class="table">
+            <th scope="row">{{command.id}}</th>
+            <th scope="row">{{command.reference}}</th>
+            <th scope="row">{{command.dateCommande | date('Y-m-d') }}</th>
+            <th scope="row">{{command.client.email}}</th>
+            <td><img class="rounded-circle w-25" src="{{ command.client.urlAvatar }}"/></td>
+            <td scope="row">{{command.totalPrice}}</td>
+        </tr>
+    {% endfor %}   
+        </tbody>
+    </table>  
+
+
+{% endblock %}
+
+{% block javascripts %}
+            <script>
+                    $(document).ready( function () {
+                        $('#tableCommands').DataTable({
+                            searching: true, 
+                            paging: true, 
+                            info: true
+                            });
+                    });
+
+            </script>
+
+{% endblock %}

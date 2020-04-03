@@ -9,26 +9,33 @@
         <ul class="navbar-nav ml-auto">
 
           {% if app.user %}
-
-          <li class="nav-item">
-            <a class="nav-link" href=" {{ path('client_page', {'id': app.user.id } ) }}">My commands</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href=" {{ path('user_profile',{"client": app.user.id}) }}">Settings</a>
-          </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ path('user_logout') }}">Log out</a>
-            </li>
-            <li class="mt-1 text-right nav-item">
-            <img class="rounded-circle w-25" src="{{ app.user.urlAvatar}}"/>
-          </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{{ path('user_login') }}">Log in</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ path('user_signin') }}">Sign in</a>
-            </li>
+              {% if is_granted('ROLE_ADMIN') %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{ path('all_clients')}}">Our clients</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="{{ path('all_commands')}}">All commands</a>
+                    </li>
+              {% endif %}
+              <li class="nav-item">
+                <a class="nav-link" href=" {{ path('client_page', {'id': app.user.id } ) }}">My commands</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href=" {{ path('user_profile',{"client": app.user.id}) }}">Settings</a>
+              </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('user_logout') }}">Log out</a>
+                </li>
+                <li class="mt-1 text-right nav-item">
+                <img class="rounded-circle w-25" src="{{ app.user.urlAvatar}}"/>
+              </li>
+              {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('user_login') }}">Log in</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('user_signin') }}">Sign in</a>
+                </li>
           {% endif %}  
           
         </ul>
