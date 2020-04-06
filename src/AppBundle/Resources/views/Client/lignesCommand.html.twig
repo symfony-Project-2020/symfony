@@ -4,7 +4,7 @@
 
 {% block body %}
     <div class="mt-5">
-        <h2>{{command.reference}}</h2>
+        <h2>Ref : *****{{command.reference}}</h2>
     </div>
     
      <table class="table table-hover mt-5">
@@ -24,7 +24,7 @@
                 <th scope="row">{{ligne.produit.title}}</th>
                 <td>&euro;  {{ ligne.produit.price | number_format(2)  }}</td>
                 <td>{{ ligne.quantity }}</td>
-                <td>&euro;  {{ ligne.produit.price * ligne.quantity }}</td>
+                <td>&euro;  {{ (ligne.produit.price * ligne.quantity) | number_format(2) }}</td>
             </tr>
     {% endfor %}   
         </tbody>

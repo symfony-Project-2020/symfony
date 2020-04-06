@@ -62,9 +62,12 @@ class ProduitsControllerController extends Controller
             $manager->flush();
 
             $this->addFlash('success',"Product <strong> {$produit->getTitle()}</strong> successfuly saved !");
+            
+            $repositoryProduit = $this->getDoctrine()->getRepository(Produit::class);
+            $produits = $repositoryProduit->findAll();
 
-            return $this->redirectToRoute('produit_show',[
-                'id'=>$produit->getId()
+            return $this->redirectToRoute('index_route',[
+                'produits'=>$produits
             ]);
         }
 
